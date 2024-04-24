@@ -16,6 +16,7 @@ html, body {
     width: 20vw;
     background: #f0f2f5;
     overflow-y: auto;
+    height: 100%;
     // 文字居中
     text-align: center;
     // 隐藏滚动条
@@ -26,9 +27,10 @@ html, body {
         padding: 0;
 
         li {
-            padding: 1em;
+            height: 3rem;
             cursor: pointer;
             color: #666666;
+            //font-size: 1rem;
 
             &.active {
                 // 选中字体变为橙色，加粗，字号加大
@@ -63,11 +65,13 @@ html, body {
     height: fit-content; /* 自适应高度 */
 
     button {
+        height: 2rem;
+        font-size: 1rem;
         margin: 10px 5px;
         background-color: #f0f2f5; /* 灰色背景 */
         border: none;
         color: #666666;
-        border-radius: 50px; /* 半圆形状 */
+        border-radius: 2rem; /* 半圆形状 */
         cursor: pointer;
         outline: none;
         width: 120px;
@@ -75,6 +79,16 @@ html, body {
         display: flex; /* 使用flex布局 */
         justify-content: center; /* 水平居中 */
         align-items: center; /* 垂直居中 */
+    }
+    // 第一个按钮左侧间距20px
+    button:first-child {
+        margin-left: 20px;
+    }
+    // 按钮选中时背景色变为橙灰色
+    button.active {
+        background-color: rgba(192, 171, 155, 0.12);
+        color: #ff8000;
+
     }
 }
 
