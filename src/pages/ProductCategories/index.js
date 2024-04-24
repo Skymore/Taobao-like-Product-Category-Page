@@ -1,101 +1,85 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import React, { useEffect, useRef, useState } from 'react';
 import './index.scss';
+import { fetchCategories, fetchSubcategoriesAndProducts } from "../../apis/categoryService";
 
 function ProductCategories() {
     const [categories, setCategories] = useState([]);
-    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-    const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(null);
+    const [categoryId, setCategoryId] = useState(null);
     const [subcategories, setSubcategories] = useState([]);
+    const [subcategoryId, setSubcategoryId] = useState(null);
     const [products, setProducts] = useState([]);
+
     const subcategoryRefs = useRef({});
-    const contentRef = useRef(null); // 用于滚动到顶部
-    const sidebarRef = useRef(null); // 用于滚动到中间
+    const contentRef = useRef(null);
+    const sidebarRef = useRef(null);
 
+    // Helper function to handle fetching and setting subcategories and products
+    const handleSetSubcategoriesAndProducts = (subcategoriesData) => {
+        const productsData = subcategoriesData.flatMap(sub => sub.products);
+        const randomProducts = randomSelection(productsData, Math.floor(Math.random() * 6) + 4);
+        const guessLikeSubcategory = {
+            id: 'guess-like',
+            name: '猜你喜欢',
+            products: randomProducts.map(product => ({
+                ...product,
+                subcategoryId: 'guess-like',
+                id: `guess-like-${product.id}`
+            }))
+        };
 
-    const serverUrl = '';
+        setSubcategories([guessLikeSubcategory, ...subcategoriesData]);
+        setSubcategoryId(guessLikeSubcategory.id);
+        setProducts([...guessLikeSubcategory.products, ...productsData]);
+    };
 
+    // Fetching initial data
     useEffect(() => {
-        fetchCategories();
+        const loadInitialData = async () => {
+            try {
+                const { data } = await fetchCategories();
+                setCategories(data.categories);
+                setCategoryId(data.categories[0].id);
+                handleSetSubcategoriesAndProducts(data.firstCategory.subcategories);
+            } catch (error) {
+                console.error('Failed to fetch initial categories data:', error);
+            }
+        };
+        loadInitialData();
     }, []);
 
+
+    // Fetch subcategories when categoryId changes
     useEffect(() => {
-        if (selectedCategoryId !== null) {
-            fetchSubcategoryAndProducts(selectedCategoryId);
-            if (contentRef.current) {
-                contentRef.current.scrollTop = 0; // 点击新的一级分类时，滚动到顶部
-            }
-        }
-    }, [selectedCategoryId]);
+        if (categoryId) {
+            const fetchAndSetSubcategories = async () => {
+                const { data } = await fetchSubcategoriesAndProducts(categoryId);
+                handleSetSubcategoriesAndProducts(data.subcategories);
+            };
+            fetchAndSetSubcategories();
 
-    const fetchCategories = async () => {
-        const response = await axios.get(`${serverUrl}/categories`);
-        setCategories(response.data);
-        if (response.data.length > 0) {
-            setSelectedCategoryId(response.data[0].id);
-        }
-    };
-
-    const fetchSubcategoryAndProducts = async (categoryId) => {
-        const response = await axios.get(`${serverUrl}/categories/${categoryId}`);
-        const subcategories = response.data.subcategories;
-        const products = subcategories.flatMap(sub => sub.products);
-        if (response.data.subcategories.length > 0) {
-        // 创建猜你喜欢的子分类
-            const randomProducts = [];
-            // 随机选择4-9个产品，不能重复
-            while (randomProducts.length < Math.floor(Math.random() * 6) + 4) {
-                const product = products[Math.floor(Math.random() * products.length)];
-                if (!randomProducts.includes(product)) {
-                    randomProducts.push(product);
+            if (sidebarRef.current) {
+                const index = categories.findIndex(cat => cat.id === categoryId);
+                if (index !== -1) {
+                    const listItem = sidebarRef.current.querySelectorAll('li')[index];
+                    listItem.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
                 }
             }
-
-            const guessLikeSubcategory = {
-                id: 'guess-like',
-                name: '猜你喜欢',
-                products: randomProducts.map(product => ({
-                    ...product,
-                    subcategoryId: 'guess-like',
-                    id: `guess-like-${product.id}`
-                }))
-            };
-
-            setSubcategories([guessLikeSubcategory, ...subcategories]);
-            setSelectedSubcategoryId('guess-like');
-            console.log(guessLikeSubcategory.products)
-            setProducts([...guessLikeSubcategory.products, ...products]);
         }
+    }, [categoryId]);
 
+    const handleCategoryClick = (id) => {
+        setCategoryId(id);
+        contentRef.current.scrollTop = 0;
     };
 
-    const handleCategoryClick = categoryId => {
-        // console.log("Category clicked:", categoryId);
-        setSelectedCategoryId(categoryId);
-        const index = categories.findIndex(cat => cat.id === categoryId);
-        // console.log("Category index:", index);
-
-        if (sidebarRef.current && index >= 0) {
-            // 使用 setTimeout 是为了等待 React 更新 DOM 后再滚动
-            setTimeout(() => {
-                const listItem = sidebarRef.current.querySelectorAll('li')[index];
-                // console.log("Scrolling to item:", listItem);
-                listItem.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
-            }, 0);  // 0毫秒的延迟，也可以尝试100毫秒看看效果
-        }
-    };
-
-
-
-
-    const handleSubcategoryClick = subcategoryId => {
-        setSelectedSubcategoryId(subcategoryId);
-        subcategoryRefs.current[subcategoryId].scrollIntoView({
-            behavior: 'smooth', // 平滑滚动
-            block: 'start' // 滚动到子分类的顶部
+    const handleSubcategoryClick = (id) => {
+        setSubcategoryId(id);
+        subcategoryRefs.current[id]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
         });
     };
 
@@ -104,9 +88,8 @@ function ProductCategories() {
             <div className="sidebar" ref={sidebarRef}>
                 <ul>
                     {categories.map(category => (
-                        <li key={category.id}
-                            onClick={() => handleCategoryClick(category.id)}
-                            className={selectedCategoryId === category.id ? 'active' : ''}>
+                        <li key={category.id} onClick={() => handleCategoryClick(category.id)}
+                            className={categoryId === category.id ? 'active' : ''}>
                             {category.name}
                         </li>
                     ))}
@@ -115,7 +98,8 @@ function ProductCategories() {
             <div className="main">
                 <div className="header">
                     {subcategories.map(subcategory => (
-                        <button className={selectedSubcategoryId === subcategory.id ? 'active' : ''} key={subcategory.id} onClick={() => handleSubcategoryClick(subcategory.id)}>
+                        <button className={subcategoryId === subcategory.id ? 'active' : ''}
+                                key={subcategory.id} onClick={() => handleSubcategoryClick(subcategory.id)}>
                             {subcategory.name}
                         </button>
                     ))}
@@ -128,10 +112,8 @@ function ProductCategories() {
                             <div className="products-container">
                                 {products.filter(product => product.subcategoryId === subcategory.id).map(product => (
                                     <div key={product.id} className="product-card">
-                                        <img src={`${serverUrl}/${product.image}`} alt={product.name}/>
-                                        <div className="product-info">
-                                            <p>{product.name}</p>
-                                        </div>
+                                        <img src={product.image} alt={product.name}/>
+                                        <div className="product-info">{product.name}</div>
                                     </div>
                                 ))}
                             </div>
@@ -144,3 +126,11 @@ function ProductCategories() {
 }
 
 export default ProductCategories;
+
+function randomSelection(products, count) {
+    const indices = new Set();
+    while (indices.size < count) {
+        indices.add(Math.floor(Math.random() * products.length));
+    }
+    return Array.from(indices).map(index => products[index]);
+}

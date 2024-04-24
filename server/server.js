@@ -10,7 +10,7 @@ app.set('json spaces', 4);
 // 设置静态图片目录
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// 获取所有分类
+// 获取一级分类列表和首个分类的详细信息
 app.get('/categories', (req, res) => {
     fs.readFile('server/db.json', (err, data) => {
         if (err) {
@@ -18,9 +18,14 @@ app.get('/categories', (req, res) => {
             return;
         }
         const db = JSON.parse(data);
-        // 只返回分类的 id 和 name`
         const categories = db.categories.map(cat => ({ id: cat.id, name: cat.name }));
-        res.json(categories);
+        const firstCategory = db.categories[0];  // 获取第一个分类的详细信息
+
+        // 返回一级分类列表和首个分类的详细信息
+        res.json({
+            categories: categories,
+            firstCategory: firstCategory
+        });
     });
 });
 
