@@ -1,0 +1,112 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: 'Arial', sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100vw;
+}
+
+.sidebar {
+    width: 20vw;
+    background: #f0f2f5;
+    overflow-y: auto;
+    // 文字居中
+    text-align: center;
+    // 隐藏滚动条
+    scrollbar-width: none;
+
+    ul {
+        list-style: none;
+        padding: 0;
+
+        li {
+            padding: 1em;
+            cursor: pointer;
+            color: #666666;
+
+            &.active {
+                // 选中字体变为橙色，加粗，字号加大
+                color: #ff8000;
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+    flex: 1;
+    overflow-x: hidden;      /* 阻止横向滚动 */
+    align-items: center;     /* 垂直居中，确保高度与最高的子元素一致 */
+}
+
+.header {
+    width: 100%;
+    flex: none;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: space-around;
+
+
+    align-items: center;
+    display: flex;
+    scrollbar-width: none; /* 针对 Firefox 隐藏滚动条 */
+    background: #ffffff;
+    height: fit-content; /* 自适应高度 */
+
+    button {
+        margin: 10px 5px;
+        background-color: #f0f2f5; /* 灰色背景 */
+        border: none;
+        color: #666666;
+        border-radius: 50px; /* 半圆形状 */
+        cursor: pointer;
+        outline: none;
+        width: 120px;
+        white-space: nowrap; /* 防止文字换行 */
+        display: flex; /* 使用flex布局 */
+        justify-content: center; /* 水平居中 */
+        align-items: center; /* 垂直居中 */
+    }
+}
+
+
+.content {
+    overflow-y: auto; /* 允许垂直滚动 */
+    flex-grow: 1; /* 占据剩余空间 */
+    width: 100%; /* 确保宽度适配父容器 */
+}
+
+.subcategory-section {
+    margin: 20px;
+}
+
+.products-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.product-card {
+    width: calc(33.333% - 10px);
+
+    img {
+        width: 100%;
+        height: calc(100vw / 3 - 10px);
+        object-fit: cover;
+    }
+
+    .product-info {
+        text-align: center;
+        color: #666;
+        font-size: 0.8rem;
+    }
+}

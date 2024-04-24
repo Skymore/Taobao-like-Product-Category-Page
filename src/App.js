@@ -1,10 +1,12 @@
 import React from 'react';
-import { Button } from 'antd';
+import ProductCategories from "./pages/ProductCategories";
 
-const App = () => (
-    <div className="App">
-        <Button type="primary">Button</Button>
-    </div>
-);
+function App() {
+    return (
+        <div>
+            <ProductCategories />
+        </div>
+    );
+}
 
 export default App;
