@@ -38,11 +38,35 @@ function ProductCategories() {
 
     const fetchSubcategoryAndProducts = async (categoryId) => {
         const response = await axios.get(`${serverUrl}/categories/${categoryId}`);
-        setSubcategories(response.data.subcategories);
-        setProducts(response.data.subcategories.flatMap(sub => sub.products));
+        const subcategories = response.data.subcategories;
+        const products = subcategories.flatMap(sub => sub.products);
         if (response.data.subcategories.length > 0) {
-            setSelectedSubcategoryId(response.data.subcategories[0].id);
+        // 创建猜你喜欢的子分类
+            const randomProducts = [];
+            // 随机选择4-9个产品，不能重复
+            while (randomProducts.length < Math.floor(Math.random() * 6) + 4) {
+                const product = products[Math.floor(Math.random() * products.length)];
+                if (!randomProducts.includes(product)) {
+                    randomProducts.push(product);
+                }
+            }
+
+            const guessLikeSubcategory = {
+                id: 'guess-like',
+                name: '猜你喜欢',
+                products: randomProducts.map(product => ({
+                    ...product,
+                    subcategoryId: 'guess-like',
+                    id: `guess-like-${product.id}`
+                }))
+            };
+
+            setSubcategories([guessLikeSubcategory, ...subcategories]);
+            setSelectedSubcategoryId('guess-like');
+            console.log(guessLikeSubcategory.products)
+            setProducts([...guessLikeSubcategory.products, ...products]);
         }
+
     };
 
     const handleCategoryClick = categoryId => {
