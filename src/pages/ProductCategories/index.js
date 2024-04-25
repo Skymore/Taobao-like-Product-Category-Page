@@ -1,20 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './index.scss';
-import { fetchCategories, fetchSubcategoriesAndProducts } from "../../apis/categoryService";
+import { fetchCategories, fetchSubcategories } from "../../apis/categoryService";
+import Sidebar from "./Sidebar";
+import MainContent from "./MainContent";
+// import MainContent2 from "./MainContent/indexV2";
 
 function ProductCategories() {
     const [categories, setCategories] = useState([]);
     const [categoryId, setCategoryId] = useState(null);
     const [subcategories, setSubcategories] = useState([]);
-    const [subcategoryId, setSubcategoryId] = useState(null);
-    const [products, setProducts] = useState([]);
-
-    const subcategoryRefs = useRef({});
-    const contentRef = useRef(null);
-    const sidebarRef = useRef(null);
 
     // Helper function to handle fetching and setting subcategories and products
-    const handleSetSubcategoriesAndProducts = (subcategoriesData) => {
+    const handleSetSubcategories = (subcategoriesData) => {
         const productsData = subcategoriesData.flatMap(sub => sub.products);
         const randomProducts = randomSelection(productsData, Math.floor(Math.random() * 6) + 4);
         const guessLikeSubcategory = {
@@ -28,8 +25,6 @@ function ProductCategories() {
         };
 
         setSubcategories([guessLikeSubcategory, ...subcategoriesData]);
-        setSubcategoryId(guessLikeSubcategory.id);
-        setProducts([...guessLikeSubcategory.products, ...productsData]);
     };
 
     // Fetching initial data
@@ -39,7 +34,7 @@ function ProductCategories() {
                 const { data } = await fetchCategories();
                 setCategories(data.categories);
                 setCategoryId(data.categories[0].id);
-                handleSetSubcategoriesAndProducts(data.firstCategory.subcategories);
+                handleSetSubcategories(data.firstCategory.subcategories);
             } catch (error) {
                 console.error('Failed to fetch initial categories data:', error);
             }
@@ -52,75 +47,25 @@ function ProductCategories() {
     useEffect(() => {
         if (categoryId) {
             const fetchAndSetSubcategories = async () => {
-                const { data } = await fetchSubcategoriesAndProducts(categoryId);
-                handleSetSubcategoriesAndProducts(data.subcategories);
+                const { data } = await fetchSubcategories(categoryId);
+                handleSetSubcategories(data.subcategories);
             };
             fetchAndSetSubcategories();
-
-            if (sidebarRef.current) {
-                const index = categories.findIndex(cat => cat.id === categoryId);
-                if (index !== -1) {
-                    const listItem = sidebarRef.current.querySelectorAll('li')[index];
-                    listItem.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                }
-            }
         }
     }, [categoryId]);
 
-    const handleCategoryClick = (id) => {
-        setCategoryId(id);
-        contentRef.current.scrollTop = 0;
-    };
-
-    const handleSubcategoryClick = (id) => {
-        setSubcategoryId(id);
-        subcategoryRefs.current[id]?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
-    };
-
     return (
         <div className="container">
-            <div className="sidebar" ref={sidebarRef}>
-                <ul>
-                    {categories.map(category => (
-                        <li key={category.id} onClick={() => handleCategoryClick(category.id)}
-                            className={categoryId === category.id ? 'active' : ''}>
-                            {category.name}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-            <div className="main">
-                <div className="header">
-                    {subcategories.map(subcategory => (
-                        <button className={subcategoryId === subcategory.id ? 'active' : ''}
-                                key={subcategory.id} onClick={() => handleSubcategoryClick(subcategory.id)}>
-                            {subcategory.name}
-                        </button>
-                    ))}
-                </div>
-                <div className="content" ref={contentRef}>
-                    {subcategories.map(subcategory => (
-                        <div key={subcategory.id} ref={el => subcategoryRefs.current[subcategory.id] = el}
-                             className="subcategory-section">
-                            <h2>{subcategory.name}</h2>
-                            <div className="products-container">
-                                {products.filter(product => product.subcategoryId === subcategory.id).map(product => (
-                                    <div key={product.id} className="product-card">
-                                        <img src={product.image} alt={product.name}/>
-                                        <div className="product-info">{product.name}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            <Sidebar
+                categories={categories}
+                categoryId={categoryId}
+                onSelect={id => {
+                    setCategoryId(id);
+                }}
+            />
+            <MainContent
+                subcategories={subcategories}
+            />
         </div>
     );
 }

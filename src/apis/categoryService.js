@@ -6,6 +6,6 @@ export const fetchCategories = async () => {
     return axios.get(`${serverUrl}/categories`);
 };
 
-export const fetchSubcategoriesAndProducts = async (categoryId) => {
+export const fetchSubcategories = async (categoryId) => {
     return axios.get(`${serverUrl}/categories/${categoryId}`);
 };
