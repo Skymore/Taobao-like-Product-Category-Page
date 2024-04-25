@@ -39,7 +39,7 @@ function ProductCategories() {
                 setCategories(data.categories);
                 setCategoryId(data.categories[0].id);
                 handleSetSubcategories(data.firstCategory.subcategories);
-                console.log("loadInitialData", data.categories);
+                console.log("loadInitialData", data);
             } catch (error) {
                 console.error('Failed to fetch initial categories data:', error);
             }
@@ -79,7 +79,7 @@ function ProductCategories() {
                     setInitialLoad(false);
                 }}
             />
-            <MainContent
+            <MainContent2
                 subcategories={subcategories}
             />
         </div>

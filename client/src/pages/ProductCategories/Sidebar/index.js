@@ -18,7 +18,7 @@ export default function Sidebar({ categories, categoryId, onSelect }) {
                 }
             }
         }, 100);
-    }, [categoryId]);
+    }, [categories, categoryId]);
 
     const handleCategoryClick = (id) => {
         onSelect(id);

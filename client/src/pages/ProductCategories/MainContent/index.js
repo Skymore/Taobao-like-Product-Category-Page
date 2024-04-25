@@ -1,15 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../index.scss';
 
-function debounce(func, wait) {
-    let timeout;
-    return function() {
-        const context = this, args = arguments;
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(context, args), wait);
-    };
-}
-
 // 头部组件，展示子类别按钮
 const Header = React.forwardRef(({ subcategories, subcategoryId, onClickSubcategory }, ref) => {
     return (
@@ -73,54 +64,55 @@ export default function MainContent({ subcategories }) {
         }
     }, [subcategories]);
 
-    const handleScroll = () => {
-        // 根据滚动位置更新选中的子类别
-        let currentId = subcategoryId;
-        const scrollPosition = contentRef.current.scrollTop;
-
-        subcategories.forEach(subcategory => {
-            const ref = subcategoryRefs.current[subcategory.id];
-            if (ref && ref.offsetTop <= scrollPosition + 100) {
-                currentId = subcategory.id;
-            }
-        });
-
-        if (currentId !== subcategoryId) {
-            setSubcategoryId(currentId);
-        }
-
-        if (headerRef.current) {
-            const index = subcategories.findIndex(cat => cat.id === currentId);
-            if (index !== -1) {
-                const listItem = headerRef.current.querySelectorAll('button')[index];
-                listItem.scrollIntoView({
-                    behavior: 'smooth',
-                    inline: 'center'
-                });
-            }
-        }
-    };
 
     useEffect(() => {
+        const handleScroll = () => {
+            // 根据滚动位置更新选中的子类别
+            let currentId = subcategoryId;
+            const scrollPosition = contentRef.current.scrollTop;
+
+            subcategories.forEach(subcategory => {
+                const ref = subcategoryRefs.current[subcategory.id];
+                if (ref && ref.offsetTop <= scrollPosition + 100) {
+                    currentId = subcategory.id;
+                }
+            });
+
+            if (currentId !== subcategoryId) {
+                setSubcategoryId(currentId);
+            }
+
+            if (headerRef.current) {
+                const index = subcategories.findIndex(cat => cat.id === currentId);
+                if (index !== -1) {
+                    const listItem = headerRef.current.querySelectorAll('button')[index];
+                    listItem.scrollIntoView({
+                        behavior: 'smooth',
+                        inline: 'center'
+                    });
+                }
+            }
+        };
+
         // 使用防抖函数处理滚动事件，优化性能
         const contentElement = contentRef.current;
-        const debouncedHandleScroll = debounce(handleScroll, 50);
 
         if (contentElement) {
-            contentElement.addEventListener('scroll', debouncedHandleScroll);
+            contentElement.addEventListener('scroll', handleScroll);
         }
 
         return () => {
             if (contentElement) {
-                contentElement.removeEventListener('scroll', debouncedHandleScroll);
+                contentElement.removeEventListener('scroll', handleScroll);
             }
         };
     }, [subcategories, subcategoryId]);
 
     const handleSubcategoryClick = (id) => {
+        setSubcategoryId(id);
         // 点击子类别按钮时触发滚动
         subcategoryRefs.current[id]?.scrollIntoView({
-            behavior: 'smooth',
+            behavior: 'instant',
             block: 'start',
         });
     };

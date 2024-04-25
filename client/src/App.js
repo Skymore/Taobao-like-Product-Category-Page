@@ -3,9 +3,7 @@ import ProductCategories from "./pages/ProductCategories";
 
 function App() {
     return (
-        <div>
-            <ProductCategories />
-        </div>
+        <ProductCategories />
     );
 }
 

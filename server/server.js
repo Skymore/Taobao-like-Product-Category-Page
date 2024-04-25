@@ -12,6 +12,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // 获取一级分类列表和首个分类的详细信息
 app.get('/categories', (req, res) => {
+    console.log('get categories', req.url);
     fs.readFile('server/db.json', (err, data) => {
         if (err) {
             res.status(500).send('Error reading data file');
@@ -35,6 +36,7 @@ app.get('/categories', (req, res) => {
     });
 });
 
+
 // 获取某个分类的详细信息
 app.get('/categories/:id', (req, res) => {
     const categoryId = parseInt(req.params.id);
@@ -51,6 +53,13 @@ app.get('/categories/:id', (req, res) => {
             res.status(404).send('Category not found');
         }
     });
+});
+
+// url找不到返回404
+app.use('*', (req, res) => {
+    console.log('404 Not Found: ' + req.originalUrl)
+    res.status(404).send('404 Not Found: ' + req.originalUrl);
+    //输出url长度
 });
 
 // Serve static assets in production
