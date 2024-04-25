@@ -18,8 +18,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "client": "npm start",
-    "server": "node server/server.js"
+    "client": "npm start"
   },
   "eslintConfig": {
     "extends": [

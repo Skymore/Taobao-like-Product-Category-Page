@@ -117,7 +117,7 @@ html, body {
 }
 
 .product-info {
-    margin-top: -10px;
+    margin-top: 10px;
     text-align: center;
     color: #666;
     font-size: 0.8rem;
@@ -126,11 +126,11 @@ html, body {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .sidebar {
-        width: 20vw;
+        width: 25vw;
     }
 
     .main {
-        width: 80vw;
+        width: 75vw;
     }
 
     .products-container {
