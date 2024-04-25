@@ -54,7 +54,7 @@
    npm install
    ```
 
-2. **启动后端服务器**：
+2. **启动前端和后端服务器**：
 
    ```bash
    node run server

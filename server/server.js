@@ -47,19 +47,9 @@ app.get('/categories/:id', (req, res) => {
     });
 });
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
-    // Set static folder
-    app.use(express.static('build'));
-
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
-    });
-}
-
 const PORT = process.env.PORT || 3004;
 
 app.listen(PORT, () => {
-    console.log('Server is running on http://localhost:3004');
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
 
