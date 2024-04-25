@@ -1,6 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../index.scss';
 
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this, args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+}
+
 export default function MainContent({ subcategories }) {
     const [subcategoryId, setSubcategoryId] = useState(null);
     const subcategoryRefs = useRef({});
@@ -27,8 +36,8 @@ export default function MainContent({ subcategories }) {
         });
 
         if (currentId !== subcategoryId) {
-            console.log("currentId", currentId)
-            console.log("subcategoryId", subcategoryId)
+            console.log("currentId", currentId);
+            console.log("subcategoryId", subcategoryId);
             setSubcategoryId(currentId);
         }
 
@@ -45,26 +54,24 @@ export default function MainContent({ subcategories }) {
         }
     };
 
-
     useEffect(() => {
-        // 当 categoryId 改变时，对应的分类滚动到可视区域中间
-        if (headerRef.current) {
-            const index = subcategories.findIndex(cat => cat.id === subcategoryId);
-            if (index !== -1) {
-                const listItem = headerRef.current.querySelectorAll('button')[index];
-                console.log("listItem", listItem);
-                listItem.scrollIntoView({
-                    behavior: 'smooth',
-                    inline: 'center'
-                });
-            }
-        }
-    }, [subcategoryId]);
+        const contentElement = contentRef.current;
+        const debouncedHandleScroll = debounce(handleScroll, 50);
 
+        if (contentElement) {
+            contentElement.addEventListener('scroll', debouncedHandleScroll);
+        }
+
+        return () => {
+            if (contentElement) {
+                contentElement.removeEventListener('scroll', debouncedHandleScroll);
+            }
+        };
+    }, [subcategories, subcategoryId]);
 
     const handleSubcategoryClick = (id) => {
         subcategoryRefs.current[id]?.scrollIntoView({
-            behavior: 'instant',
+            behavior: 'smooth',
             block: 'start',
         });
         setSubcategoryId(id);
@@ -84,12 +91,11 @@ export default function MainContent({ subcategories }) {
                     </button>
                 ))}
             </div>
-            <div className="content" onScroll={() => handleScroll()} ref={contentRef}>
+            <div className="content" ref={contentRef}>
                 {subcategories.map(subcategory => (
                     <div key={subcategory.id} ref={el => subcategoryRefs.current[subcategory.id] = el}
                          className="subcategory-section">
                         <h2>{subcategory.name}</h2>
-
                         <div className="products-container">
                             {subcategory.products.map(product => (
                                 <div
