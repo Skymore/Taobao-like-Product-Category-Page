@@ -38,6 +38,7 @@
         |-- pages/              # 页面组件
             |-- MainContent     # 主内容组件
                 |-- index.js    # 主内容组件入口
+                |-- indexV2.js  # 主内容组件入口（V2,V3)
             |-- Sidebar         # 侧边栏组件
                 |-- index.js    # 侧边栏组件入口
             |-- index.js        # 页面入口
