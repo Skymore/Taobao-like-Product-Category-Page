@@ -65,8 +65,6 @@ export default function MainContent({ subcategories }) {
     const contentRef = useRef(null);
     const headerRef = useRef(null);
 
-    let isProgrammaticScroll = false;
-
     useEffect(() => {
         // 初始化时设置第一个子类别为选中状态，并滚动到顶部
         setSubcategoryId(subcategories[0]?.id);
@@ -120,13 +118,11 @@ export default function MainContent({ subcategories }) {
     }, [subcategories, subcategoryId]);
 
     const handleSubcategoryClick = (id) => {
-        isProgrammaticScroll = true;
         // 点击子类别按钮时触发滚动
         subcategoryRefs.current[id]?.scrollIntoView({
             behavior: 'smooth',
             block: 'start',
         });
-        setSubcategoryId(id);
     };
 
     return (
