@@ -49,13 +49,18 @@
 
 ## 运行项目
 
-1. **安装依赖**：
+1. **下载项目**: 
+
+   ```bash
+   git clone https://github.com/Skymore/Taobao-like-Product-Category-Page.git
+
+2. **安装依赖**：
 
    ```bash
    npm install
    ```
 
-2. **启动前端和后端服务器**：
+3. **启动前端和后端服务器**：
 
    ```bash
    node run dev
