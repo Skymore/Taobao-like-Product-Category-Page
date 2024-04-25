@@ -87,7 +87,37 @@
             "id": 2,
             "name": "电器"
         }
-  ]
+    ],
+     "firstCategory": {
+        "id": 1,
+        "name": "生鲜",
+        "subcategories": [
+            {
+                "id": 1,
+                "name": "生鲜测试一",
+                "products": [
+                    {
+                        "id": 1,
+                        "name": "产品A 1",
+                        "image": "images/image0.webp",
+                        "subcategoryId": 1
+                    },
+                    {
+                        "id": 2,
+                        "name": "产品J 2",
+                        "image": "images/image5.webp",
+                        "subcategoryId": 1
+                    },
+                    {
+                        "id": 3,
+                        "name": "产品E 3",
+                        "image": "images/image4.webp",
+                        "subcategoryId": 1
+                    }
+                ]
+            }
+        ]
+    }
   }
   ```
 
@@ -119,43 +149,7 @@
           {"id": 4, "name": "Dell XPS 13", "image": "images/image3.webp", "subcategoryId": 2}
         ]
       }
-    ],
-     "firstCategory": {
-        "id": 1,
-        "name": "生鲜",
-        "subcategories": [
-            {
-                "id": 1,
-                "name": "生鲜测试一",
-                "products": [
-                    {
-                        "id": 1,
-                        "name": "产品A 1",
-                        "image": "images/image0.webp",
-                        "subcategoryId": 1
-                    },
-                    {
-                        "id": 2,
-                        "name": "产品J 2",
-                        "image": "images/image5.webp",
-                        "subcategoryId": 1
-                    },
-                    {
-                        "id": 3,
-                        "name": "产品E 3",
-                        "image": "images/image4.webp",
-                        "subcategoryId": 1
-                    },
-                    {
-                        "id": 4,
-                        "name": "产品G 4",
-                        "image": "images/image6.webp",
-                        "subcategoryId": 1
-                    }
-                ]
-            }
-        ]
-    }
+    ]
   }
   ```
 
