@@ -20,12 +20,18 @@ app.get('/categories', (req, res) => {
         const db = JSON.parse(data);
         const categories = db.categories.map(cat => ({ id: cat.id, name: cat.name }));
         const firstCategory = db.categories[0];  // 获取第一个分类的详细信息
-
+        // 模拟网络延迟
+        setTimeout(() => {
+            res.json({
+                categories: categories,
+                firstCategory: firstCategory
+            });
+        }, 500);
         // 返回一级分类列表和首个分类的详细信息
-        res.json({
-            categories: categories,
-            firstCategory: firstCategory
-        });
+        // res.json({
+        //     categories: categories,
+        //     firstCategory: firstCategory
+        // });
     });
 });
 

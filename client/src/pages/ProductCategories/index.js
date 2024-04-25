@@ -3,12 +3,15 @@ import './index.scss';
 import { fetchCategories, fetchSubcategories } from "../../apis/categoryService";
 import Sidebar from "./Sidebar";
 import MainContent from "./MainContent";
+import Loading from "./Loading";
 import MainContent2 from "./MainContent/indexV2";
 
 function ProductCategories() {
     const [categories, setCategories] = useState([]);
-    const [categoryId, setCategoryId] = useState(null);
+    const [categoryId, setCategoryId] = useState(1);
     const [subcategories, setSubcategories] = useState([]);
+    const [isLoading, setIsLoading] = useState(false); // 新增状态变量
+    const [initialLoad, setInitialLoad] = useState(true); // 新增状态变量
 
     // Helper function to handle fetching and setting subcategories and products
     const handleSetSubcategories = (subcategoriesData) => {
@@ -30,37 +33,50 @@ function ProductCategories() {
     // Fetching initial data
     useEffect(() => {
         const loadInitialData = async () => {
+            setIsLoading(true); // 开始加载数据
             try {
                 const { data } = await fetchCategories();
                 setCategories(data.categories);
                 setCategoryId(data.categories[0].id);
                 handleSetSubcategories(data.firstCategory.subcategories);
+                console.log("loadInitialData", data.categories);
             } catch (error) {
                 console.error('Failed to fetch initial categories data:', error);
             }
+            setIsLoading(false); // 结束加载数据
         };
+
         loadInitialData();
     }, []);
 
 
     // Fetch subcategories when categoryId changes
     useEffect(() => {
-        if (categoryId) {
+        if (categoryId && !initialLoad) {
             const fetchAndSetSubcategories = async () => {
-                const { data } = await fetchSubcategories(categoryId);
-                handleSetSubcategories(data.subcategories);
+                try {
+                    const { data } = await fetchSubcategories(categoryId);
+                    handleSetSubcategories(data.subcategories);
+                    console.log("fetchAndSetSubcategories", data);
+                } catch (error) {
+                    console.error('Failed to fetch subcategories:', error);
+                }
             };
+
             fetchAndSetSubcategories();
         }
-    }, [categoryId]);
+    }, [categoryId, initialLoad]);
+
 
     return (
         <div className="container">
+            {isLoading && <Loading/>}
             <Sidebar
                 categories={categories}
                 categoryId={categoryId}
                 onSelect={id => {
                     setCategoryId(id);
+                    setInitialLoad(false);
                 }}
             />
             <MainContent

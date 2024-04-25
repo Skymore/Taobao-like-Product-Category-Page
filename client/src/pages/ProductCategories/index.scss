@@ -107,7 +107,7 @@ html, body {
 }
 
 .product-card {
-    height: 30vw;
+    aspect-ratio: 1 / 1;
 }
 
 .product-card img {
@@ -153,3 +153,15 @@ html, body {
         width: 140px;
     }
 }
+
+@media (min-width: 1440px) {
+    .products-container {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .header button {
+        font-size: 1.2rem;
+        width: 140px;
+    }
+}
+
