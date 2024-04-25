@@ -77,16 +77,17 @@
 - **响应**：
 
   ```json
-  [
-    {
-      "id": 1,
-      "name": "电子产品"
-    },
-    {
-      "id": 2,
-      "name": "家用电器"
-    }
-  ]
+  {
+    "categories": [
+        {
+            "id": 1,
+            "name": "生鲜"
+        },
+        {
+            "id": 2,
+            "name": "电器"
+        },
+  }
   ```
 
 ### 获取指定一级分类下的具体内容
@@ -102,19 +103,19 @@
     "name": "电子产品",
     "subcategories": [
       {
-        "id": 101,
+        "id": 1,
         "name": "手机",
         "products": [
-          {"id": 1001, "name": "iPhone 12", "image": "images/image.webp", "subcategoryId": 1},
-          {"id": 1002, "name": "Samsung Galaxy S20", "image": "images/image.webp", "subcategoryId": 1}
+          {"id": 1, "name": "iPhone 12", "image": "images/image0.webp", "subcategoryId": 1},
+          {"id": 2, "name": "Samsung Galaxy S20", "image": "images/image1.webp", "subcategoryId": 1}
         ]
       },
       {
-        "id": 102,
+        "id": 2,
         "name": "电脑",
         "products": [
-          {"id": 1003, "name": "MacBook Pro", "image": "images/image.webp", "subcategoryId": 2},
-          {"id": 1004, "name": "Dell XPS 13", "image": "images/image.webp", "subcategoryId": 2}
+          {"id": 3, "name": "MacBook Pro", "image": "images/image2.webp", "subcategoryId": 2},
+          {"id": 4, "name": "Dell XPS 13", "image": "images/image3.webp", "subcategoryId": 2}
         ]
       }
     ]
