@@ -36,8 +36,6 @@ export default function MainContent({ subcategories }) {
         });
 
         if (currentId !== subcategoryId) {
-            console.log("currentId", currentId);
-            console.log("subcategoryId", subcategoryId);
             setSubcategoryId(currentId);
         }
 
@@ -45,7 +43,6 @@ export default function MainContent({ subcategories }) {
             const index = subcategories.findIndex(cat => cat.id === currentId);
             if (index !== -1) {
                 const listItem = headerRef.current.querySelectorAll('button')[index];
-                console.log("listItem", listItem);
                 listItem.scrollIntoView({
                     behavior: 'smooth',
                     inline: 'center'
