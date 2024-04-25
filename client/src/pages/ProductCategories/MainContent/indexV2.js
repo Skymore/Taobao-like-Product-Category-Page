@@ -1,107 +1,127 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../index.scss';
 
-function Nav({ subcategories, subcategoryId, onLinkClick }) {
+// 头部组件，展示子类别按钮
+const Header = React.forwardRef(({ subcategories, subcategoryId, onClickSubcategory }, ref) => {
     return (
-        <div className="header">
+        <div ref={ref} className="header">
             {subcategories.map(subcategory => (
                 <button
                     data-id={subcategory.id}
                     className={subcategoryId === subcategory.id ? 'active' : ''}
                     key={subcategory.id}
-                    onClick={() => onLinkClick(subcategory.id)}
+                    onClick={() => onClickSubcategory(subcategory.id)}
                 >
-                    {/*<a href={'#' + subcategory.id} style={{ color: 'inherit', textDecoration: 'none' }}>*/}
-                        {subcategory.name}
-                    {/*</a>*/}
+                    {subcategory.name}
                 </button>
             ))}
         </div>
     );
-}
+});
 
-function Subcategory({ subcategory }) {
+
+// 内容组件，展示子类别详情和产品
+const Content = React.forwardRef(({ subcategories, subcategoryRefs }, ref) => {
     return (
-        <Anchor id={subcategory.id}>
-            <div key={subcategory.id} className="subcategory-section">
-                <h2>{subcategory.name}</h2>
-                <div className="products-container">
-                    {subcategory.products.map(product => (
-                        <div
-                            key={product.id}
-                            className="product-card"
-                        >
-                            <img src={product.image} alt={product.name}/>
-                            <div className="product-info">{product.name}</div>
-                        </div>
-                    ))}
+        <div ref={ref} className="content">
+            {subcategories.map(subcategory => (
+                <div
+                    key={subcategory.id}
+                    ref={el => subcategoryRefs.current[subcategory.id] = el}
+                    className="subcategory-section"
+                >
+                    <h2>{subcategory.name}</h2>
+                    <div className="products-container">
+                        {subcategory.products.map(product => (
+                            <div
+                                key={product.id}
+                                className="product-card"
+                                data-subcategory-id={product.subcategoryId}
+                            >
+                                <img src={product.image} alt={product.name} />
+                                <div className="product-info">{product.name}</div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
-        </Anchor>
-    )
-}
-
-function Anchor({ children, id }) {
-    return (
-        <div id={id}>
-            {children}
+            ))}
         </div>
-    )
-}
+    );
+});
 
 
 export default function MainContent2({ subcategories }) {
     const [subcategoryId, setSubcategoryId] = useState(null);
+    const subcategoryRefs = useRef({});
     const contentRef = useRef(null);
+    const headerRef = useRef(null);
 
-    const scrollToSubcategory = (subcategoryId) => {
-        console.log("subcategoryId", subcategoryId);
-        const subcategoryEl = document.getElementById(subcategoryId);
-        console.log("subcategoryEl", subcategoryEl);
-        subcategoryEl.scrollIntoView({ behavior: 'smooth' });
-    }
+    let isProgrammaticScroll = false;
 
     useEffect(() => {
-        const handleScroll = () => {
-            subcategories.forEach(subcategory => {
-                const element = document.getElementById(subcategory.id);
-                // 获取元素在可视区域中的位置
-                const rect = element.getBoundingClientRect();
-                // 判断是否在可视区域内
-                if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-                    setSubcategoryId(subcategory.id);
-                }
-            })
-        }
-
-        window.addEventListener('scroll', handleScroll);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        }
-    }, []);
-
-    useEffect(() => {
+        // 初始化时设置第一个子类别为选中状态，并滚动到顶部
         setSubcategoryId(subcategories[0]?.id);
-
         if (contentRef.current) {
             contentRef.current.scrollTo(0, 0);
         }
     }, [subcategories]);
 
+    const handleScroll = () => {
+        // 根据滚动位置更新选中的子类别
+        let currentId = subcategoryId;
+        const scrollPosition = contentRef.current.scrollTop;
+
+        subcategories.forEach(subcategory => {
+            const ref = subcategoryRefs.current[subcategory.id];
+            if (ref && ref.offsetTop <= scrollPosition + 100) {
+                currentId = subcategory.id;
+            }
+        });
+
+        if (currentId !== subcategoryId) {
+            setSubcategoryId(currentId);
+        }
+    };
+
+    useEffect(() => {
+        // 使用防抖函数处理滚动事件，优化性能
+        const contentElement = contentRef.current;
+
+        if (contentElement) {
+            contentElement.addEventListener('scroll', handleScroll);
+        }
+
+        return () => {
+            if (contentElement) {
+                contentElement.removeEventListener('scroll', handleScroll);
+            }
+        };
+    }, [subcategories, subcategoryId]);
+
+    const handleSubcategoryClick = (id) => {
+        isProgrammaticScroll = true;
+        // 点击子类别按钮时触发滚动
+        subcategoryRefs.current[id]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+        });
+        setSubcategoryId(id);
+    };
 
     return (
         <div className="main">
-            <Nav
+            <Header
                 subcategories={subcategories}
                 subcategoryId={subcategoryId}
-                onLinkClick={(id) => scrollToSubcategory(id)}
+                onClickSubcategory={handleSubcategoryClick}
+                ref={headerRef}
             />
-            <div className="content" ref={contentRef}>
-                {subcategories.map(subcategory => (
-                    <Subcategory key={subcategory.id} subcategory={subcategory}/>
-                ))}
-            </div>
+            <Content
+                subcategories={subcategories}
+                subcategoryRefs={subcategoryRefs}
+                ref={contentRef}
+            />
         </div>
     );
+
 }

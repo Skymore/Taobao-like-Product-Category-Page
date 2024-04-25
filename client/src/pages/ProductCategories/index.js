@@ -3,6 +3,7 @@ import './index.scss';
 import { fetchCategories, fetchSubcategories } from "../../apis/categoryService";
 import Sidebar from "./Sidebar";
 import MainContent from "./MainContent";
+import MainContent2 from "./MainContent/indexV2";
 
 function ProductCategories() {
     const [categories, setCategories] = useState([]);
@@ -62,7 +63,7 @@ function ProductCategories() {
                     setCategoryId(id);
                 }}
             />
-            <MainContent
+            <MainContent2
                 subcategories={subcategories}
             />
         </div>
