@@ -120,4 +120,4 @@
 
 ## 开源许可
 
-本项目采用MIT许可证，详情请参见[LICENSE](LICENSE)文件。
+本项目采用MIT许可证，详情请参见[LICENSE](https://github.com/Skymore/Taobao-like-Product-Category-Page/blob/main/LISENCE)文件。
