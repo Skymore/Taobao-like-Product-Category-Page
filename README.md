@@ -28,22 +28,25 @@
 
 ```
 /project-root
-|-- public/                 # 公共静态资源
-|-- src/                    # 源代码目录
-    |-- apis/               # API调用相关
-    |-- pages/              # 页面组件
-        |-- MainContent     # 主内容组件
-            |-- index.js    # 主内容组件入口
-        |-- Sidebar         # 侧边栏组件
-            |-- index.js    # 侧边栏组件入口
-        |-- index.js        # 页面入口
-        |-- index.scss      # 页面样式
-    |-- App.js              # 应用入口
-    |-- index.js            # React渲染入口
-|-- server/                 # 服务器端代码
-|-- package.json            # 项目依赖
-|-- package-lock.json       # 项目依赖锁定文件
-|-- README.md               # 项目说明文件
+|-- client/                     # 客户端代码
+    |-- public/                 # 公共静态资源
+    |-- src/                    # 源代码目录
+        |-- apis/               # API调用相关
+        |-- pages/              # 页面组件
+            |-- MainContent     # 主内容组件
+                |-- index.js    # 主内容组件入口
+            |-- Sidebar         # 侧边栏组件
+                |-- index.js    # 侧边栏组件入口
+            |-- index.js        # 页面入口
+            |-- index.scss      # 页面样式
+        |-- App.js              # 应用入口
+        |-- index.js            # React渲染入口
+    |-- package.json            # 项目依赖
+    |-- package-lock.json       # 项目依赖锁定文件
+|-- server/                     # 服务器端代码
+|-- package.json                # 项目依赖
+|-- package-lock.json           # 项目依赖锁定文件
+|-- README.md                   # 项目说明文件
 ```
 
 ## 运行项目
@@ -57,13 +60,7 @@
 2. **启动前端和后端服务器**：
 
    ```bash
-   node run server
-   ```
-
-3. **启动前端应用**：
-
-   ```bash
-   npm start
+   node run dev
    ```
 
    访问 `http://localhost:3000` 来查看应用。
