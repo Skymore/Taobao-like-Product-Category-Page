@@ -4,7 +4,9 @@
 
 ## 模仿 & 实现页面
 
-模仿：<img src="img.png" alt="img" height="400"/> 实现：<img src="demo.gif" alt="demo" height="400"/>!
+模仿：<img src="img.png" alt="img" height="400"/> 
+
+实现：<img src="demo.gif" alt="demo" height="400"/>!
 
 ## 功能特性
 
