@@ -63,7 +63,7 @@ function ProductCategories() {
                     setCategoryId(id);
                 }}
             />
-            <MainContent2
+            <MainContent
                 subcategories={subcategories}
             />
         </div>
